@@ -2834,17 +2834,21 @@ function FlatpickrInstance(
    * Updates the values of inputs associated with the calendar
    */
   function updateValue(triggerChange = true) {
+    // Allow plugins to override input value handling
+    if (typeof self.config.inputValueSetter === "function") {
+      self.config.inputValueSetter(self);
+    } else {
+      self.input.value = getDateStr(self.config.dateFormat);
+      if (self.altInput !== undefined) {
+        self.altInput.value = getDateStr(self.config.altFormat);
+      }
+    }
+  
     if (self.mobileInput !== undefined && self.mobileFormatStr) {
       self.mobileInput.value =
         self.latestSelectedDateObj !== undefined
           ? self.formatDate(self.latestSelectedDateObj, self.mobileFormatStr)
           : "";
-    }
-
-    self.input.value = getDateStr(self.config.dateFormat);
-
-    if (self.altInput !== undefined) {
-      self.altInput.value = getDateStr(self.config.altFormat);
     }
 
     if (triggerChange !== false) triggerEvent("onValueUpdate");
